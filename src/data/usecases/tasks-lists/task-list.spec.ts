@@ -95,6 +95,24 @@ describe('TaskList use case', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
+    })
+    
+    test('Should throw if HttpPostClient returns 404 on UnexpectedError', async () => {
+
+        const { sut, httpPostClientStub } = makeSut()
+
+        httpPostClientStub.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const promise = sut.create(taskListParams)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
     })    
 
 })
