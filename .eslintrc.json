@@ -8,8 +8,10 @@
     "parserOptions": {
         "project": "./tsconfig.json"
     },
+    "ignorePatterns": ["*.js"],
     "rules": {
         "@typescript-eslint/indent": ["error", 4],
+        "@typescript-eslint/method-signature-style": "off",
         "@typescript-eslint/strict-boolean-expressions": "off",
         "@typescript-eslint/quotes": "off",
         "@typescript-eslint/camelcase": "off",
