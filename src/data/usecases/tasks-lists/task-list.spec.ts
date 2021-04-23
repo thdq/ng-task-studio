@@ -1,6 +1,6 @@
 import { HttpPostParams } from '@/data/protocols/http/http-params'
 import { HttpPostClient } from '@/data/protocols/http/http-post-client'
-import { HttpResponse } from '@/data/protocols/http/http-response'
+import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskListModel } from '@/domain/models/task-list'
 import { TaskListParams } from '@/domain/usecases/tasks-lists/create-task-list'
 import faker from 'faker'
@@ -17,7 +17,7 @@ const makeHttpPostClient = (): HttpPostClient<TaskListParams, TaskListModel> => 
         url?: string
         body?: T
         response: HttpResponse<R> = {
-            statusCode: 200
+            statusCode: HttpStatusCode.success
         }
 
         async post (params: HttpPostParams<T>): Promise<HttpResponse<R>> {
