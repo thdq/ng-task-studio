@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+      "baseUrl": "src",
+      "rootDirs": ["src"],
+      "outDir": "dist",
+      "module": "commonjs",
+      "target": "es2019",
+      "esModuleInterop": true,
+      "allowJs": true,
+      "sourceMap": true,
+      "paths": {
+          "@/*": ["*"]            
+      }
+  },
+  "exclude": ["node_modules", "dist"]
+}
