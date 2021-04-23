@@ -63,5 +63,19 @@ describe('TaskList use case', () => {
         expect(httpPostClientStub.url).toBe(url)
 
     })
+    
+    test('Should call HttpPostClient with correct body', async () => {
+
+        const { sut, httpPostClientStub } = makeSut()
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        await sut.create(taskListParams)
+
+        expect(httpPostClientStub.body).toEqual(taskListParams)
+
+    })    
 
 })
