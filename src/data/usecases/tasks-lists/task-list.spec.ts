@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@/data/errors/unexpected'
 import { HttpPostParams } from '@/data/protocols/http/http-params'
 import { HttpPostClient } from '@/data/protocols/http/http-post-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
@@ -75,6 +76,24 @@ describe('TaskList use case', () => {
         await sut.create(taskListParams)
 
         expect(httpPostClientStub.body).toEqual(taskListParams)
+
+    })
+    
+    test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
+
+        const { sut, httpPostClientStub } = makeSut()
+
+        httpPostClientStub.response = {
+            statusCode: HttpStatusCode.badRequest
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const promise = sut.create(taskListParams)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
 
     })    
 
