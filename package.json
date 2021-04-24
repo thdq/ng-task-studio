@@ -10,6 +10,7 @@
     "test:staged": "yarn test --findRelatedTests"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/faker": "^5.5.3",
     "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "4",
@@ -25,5 +26,8 @@
     "lint-staged": "^10.5.4",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }
