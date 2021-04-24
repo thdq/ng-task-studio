@@ -105,6 +105,36 @@ describe('FindAllTaskByListId', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
-    })    
+    })
+    
+    test('Should return an TaskModel array if HttpGetClient returns 200', async () => {
+        
+        const listId = 1
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        const httpResult: TaskModel[] = [
+            {
+                id: faker.datatype.number(),
+                listId: faker.datatype.number(),
+                title: faker.random.words()
+            },
+            {
+                id: faker.datatype.number(),
+                listId: faker.datatype.number(),
+                title: faker.random.words()
+            }            
+        ]
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.success,
+            body: httpResult
+        }
+
+        const taskList = await sut.findAllTaskByListId(listId)
+
+        expect(taskList).toEqual(httpResult)
+
+    })     
 
 })
