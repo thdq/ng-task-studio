@@ -1,3 +1,4 @@
+import { MissingParamsError } from "@/data/errors/missing-params-error"
 import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpPutClient } from "@/data/protocols/http/http-put-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
@@ -18,7 +19,9 @@ export class EditTask implements Task {
     
     async update (params: TaskParams): Promise<TaskModel> {
         
-        this.validation.validate(params)
+        const validation = this.validation.validate(params)
+        
+        if (validation.error) throw new MissingParamsError(validation.failedField)
         
         const httpResponse = await this.httpPutClient.put({
             url: this.url,
