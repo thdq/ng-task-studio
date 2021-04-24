@@ -10,5 +10,7 @@ export interface Task {
     create? (params: TaskParams): Promise<TaskModel>
     
     update? (params: TaskParams): Promise<TaskModel>
+    
+    delete? (): Promise<void>
 
 }
