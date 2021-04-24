@@ -183,6 +183,30 @@ describe('TaskList use case', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
-    })    
+    })
+    
+    test('Should return an TaskListModel if HttpPostClient returns 200', async () => {
+
+        const { sut, httpPostClientStub } = makeSut()
+
+        const httpResult: TaskListModel = {
+            id: faker.datatype.number(),
+            title: faker.random.words()
+        }
+
+        httpPostClientStub.response = {
+            statusCode: HttpStatusCode.success,
+            body: httpResult
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const user = await sut.create(taskListParams)
+
+        expect(user).toEqual(httpResult)
+
+    })       
 
 })
