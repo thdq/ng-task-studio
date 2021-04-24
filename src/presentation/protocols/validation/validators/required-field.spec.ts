@@ -19,6 +19,16 @@ describe('RequiredField Validation', () => {
             failedField: "field"
         })
         
-    })    
+    })
+    
+    test('Should not return error if validation succeeds', () => {
+        
+        const sut = makeSut()
+        
+        const error = sut.validate({ field: faker.random.words() })
+        
+        expect(error).toBeFalsy()
+        
+    })     
     
 })
