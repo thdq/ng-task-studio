@@ -14,5 +14,7 @@ export interface Task {
     delete? (): Promise<void>
     
     findAllTaskByListId? (listId: number): Promise<TaskModel[]>
+    
+    findTaskById? (id: number): Promise<TaskModel>
 
 }

@@ -6,14 +6,14 @@ import { Task } from "@/domain/usecases/task"
 
 export class FindTaskById implements Task {
     private readonly url: string
-    private readonly httpGetClient: HttpGetClient<TaskModel[]>
+    private readonly httpGetClient: HttpGetClient<TaskModel>
     
-    constructor (url: string, httpGetClient: HttpGetClient<TaskModel[]>) {
+    constructor (url: string, httpGetClient: HttpGetClient<TaskModel>) {
         this.url = url
         this.httpGetClient = httpGetClient
     }
     
-    async findAllTaskByListId (id: number): Promise<TaskModel[]> {
+    async findTaskById (id: number): Promise<TaskModel> {
                 
         const httpResponse = await this.httpGetClient.get({
             url: `${this.url}/${id}`
