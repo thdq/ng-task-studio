@@ -7,3 +7,7 @@ export interface HttpPutParams<T> {
     url: string
     body?: T
 }
+
+export interface HttpDeleteParams {
+    url: string
+}

@@ -8,4 +8,6 @@ export interface TaskList {
     create? (params: TaskListParams): Promise<TaskListModel>
     
     update? (params: TaskListParams): Promise<TaskListModel>
+    
+    delete? (): Promise<void>
 }
