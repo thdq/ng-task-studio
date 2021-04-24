@@ -98,6 +98,32 @@ describe('FindAllTaskList use case', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
-    })    
+    })
+    
+    test('Should return an TaskListModel array if HttpGetClient returns 200', async () => {
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        const httpResult: TaskListModel[] = [
+            {
+                id: faker.datatype.number(),
+                title: faker.random.words()
+            },
+            {
+                id: faker.datatype.number(),
+                title: faker.random.words()
+            }            
+        ]
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.success,
+            body: httpResult
+        }
+
+        const taskList = await sut.findAll()
+
+        expect(taskList).toEqual(httpResult)
+
+    })     
 
 })
