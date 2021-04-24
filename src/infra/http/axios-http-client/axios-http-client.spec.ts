@@ -77,5 +77,31 @@ describe('AxiosHttpClient', () => {
         })
         
     })    
+    
+    test('Should return correct error', () => {
+        
+        const { sut, mockedAxios } = makeSut()
+        
+        const request: HttpRequest = {
+            url: faker.internet.url(),
+            method: faker.random.arrayElement(['get', 'post', 'put', 'delete']),
+            body: faker.random.objectElement(),
+            headers: faker.random.objectElement()
+        }        
+        
+        const httpResponse = {
+            data: faker.random.objectElement(),
+            status: faker.datatype.number()            
+        }
+        
+        mockedAxios.request.mockRejectedValueOnce({
+            response: httpResponse
+        })
+    
+        const promise = sut.request(request)
+    
+        expect(promise).toEqual(mockedAxios.request.mock.results[0].value)
+        
+    })    
 
 })
