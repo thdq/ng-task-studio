@@ -1,4 +1,4 @@
-import { HttpRequest } from '@/data/protocols/http/http-request'
+import { HttpRequest } from '@/data/protocols/http/http-client'
 import axios from 'axios'
 import faker from 'faker'
 import { AxiosHttpClient } from './axios-http-client'
