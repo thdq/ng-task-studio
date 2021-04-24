@@ -1,4 +1,5 @@
 import { MissingParamsError } from '@/data/errors/missing-params-error'
+import { UnexpectedError } from '@/data/errors/unexpected'
 import { HttpPutParams } from '@/data/protocols/http/http-params'
 import { HttpPutClient } from '@/data/protocols/http/http-put-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
@@ -128,6 +129,60 @@ describe('EditTaskList use case', () => {
 
         await expect(promise).rejects.toThrow(new MissingParamsError("title"))
         
-    })      
+    })
+    
+    test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
+
+        const { sut, httpPutClientStub } = makeSut()
+
+        httpPutClientStub.response = {
+            statusCode: HttpStatusCode.badRequest
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const promise = sut.update(taskListParams)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpPostClient returns 404 on UnexpectedError', async () => {
+
+        const { sut, httpPutClientStub } = makeSut()
+
+        httpPutClientStub.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const promise = sut.update(taskListParams)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpPostClient returns 500 on UnexpectedError', async () => {
+
+        const { sut, httpPutClientStub } = makeSut()
+
+        httpPutClientStub.response = {
+            statusCode: HttpStatusCode.serverError
+        }
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        const promise = sut.update(taskListParams)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })    
 
 })
