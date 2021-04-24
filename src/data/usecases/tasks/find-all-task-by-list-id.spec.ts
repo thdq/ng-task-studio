@@ -1,3 +1,4 @@
+import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpGetClient } from "@/data/protocols/http/http-get-client"
 import { HttpGetParams } from "@/data/protocols/http/http-params"
 import { HttpResponse, HttpStatusCode } from "@/data/protocols/http/http-response"
@@ -57,5 +58,53 @@ describe('FindAllTaskByListId', () => {
         expect(httpGetClientStub.url).toBe(`${url}?listId=${listId}`)
 
     })
+    
+    test('Should throw if HttpGetClient returns 400 on UnexpectedError', async () => {
+        
+        const listId = 1
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.badRequest
+        }
+
+        const promise = sut.findAllTaskByListId(listId)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpGetClient returns 404 on UnexpectedError', async () => {
+        
+        const listId = 1
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const promise = sut.findAllTaskByListId(listId)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpGetClient returns 500 on UnexpectedError', async () => {
+        
+        const listId = 1
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.serverError
+        }
+
+        const promise = sut.findAllTaskByListId(listId)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })    
 
 })
