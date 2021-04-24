@@ -1,3 +1,4 @@
+import { MissingParamsError } from "@/data/errors/missing-params-error"
 import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpPostClient } from "@/data/protocols/http/http-post-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
@@ -18,7 +19,9 @@ export class TaskList implements CreateTaskList {
     
     async create (params: TaskListParams): Promise<TaskListModel> {
         
-        this.validation.validate(params)
+        const validation = this.validation.validate(params)
+        
+        if (validation.error) throw new MissingParamsError(validation.failedField)
         
         const httpResponse = await this.httpPostClient.post({
             url: this.url,
