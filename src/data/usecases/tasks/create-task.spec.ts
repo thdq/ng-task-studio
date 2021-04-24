@@ -1,7 +1,10 @@
 import { HttpPostParams } from '@/data/protocols/http/http-params'
 import { HttpPostClient } from '@/data/protocols/http/http-post-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
+import { TaskModel } from '@/domain/models/task'
+import { TaskParams } from '@/domain/usecases/task'
 import faker from 'faker'
+import { CreateTask } from './create-task'
 
 interface SutTypes {
     sut: CreateTask
@@ -52,7 +55,9 @@ describe('CreateTask use case', () => {
         const { sut, httpPostClientStub } = makeSut(url)
             
         const taskParams: TaskParams = {
-            title: faker.random.words()
+            title: faker.random.words(),
+            completed: false,
+            listId: faker.datatype.number()
         }
             
         await sut.create(taskParams)
