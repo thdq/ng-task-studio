@@ -34,6 +34,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AxiosHttpClient', () => {
+    
     test('Should call axios with correct values', async () => {
         
         const request: HttpRequest = {
@@ -53,6 +54,28 @@ describe('AxiosHttpClient', () => {
             headers: request.headers,
             method: request.method
         })
+        
     })
+    
+    test('Should return correct response', async () => {
+        
+        const { sut, mockedAxios } = makeSut()
+        
+        const request: HttpRequest = {
+            url: faker.internet.url(),
+            method: faker.random.arrayElement(['get', 'post', 'put', 'delete']),
+            body: faker.random.objectElement(),
+            headers: faker.random.objectElement()
+        }        
+    
+        const httpResponse = await sut.request(request)
+        const axiosResponse = await mockedAxios.request.mock.results[0].value
+    
+        expect(httpResponse).toEqual({
+            statusCode: axiosResponse.status,
+            body: axiosResponse.data
+        })
+        
+    })    
 
 })
