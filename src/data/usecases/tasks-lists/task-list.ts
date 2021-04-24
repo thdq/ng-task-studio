@@ -3,17 +3,22 @@ import { HttpPostClient } from "@/data/protocols/http/http-post-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
 import { TaskListModel } from "@/domain/models/task-list"
 import { CreateTaskList, TaskListParams } from "@/domain/usecases/tasks-lists/create-task-list"
+import { Validation } from "@/validation/validation"
 
 export class TaskList implements CreateTaskList {
     private readonly url: string
     private readonly httpPostClient: HttpPostClient<TaskListParams, TaskListModel>
+    private readonly validation: Validation
     
-    constructor (url: string, httpPostClient: HttpPostClient<TaskListParams, TaskListModel>) {
+    constructor (url: string, httpPostClient: HttpPostClient<TaskListParams, TaskListModel>, validation: Validation) {
         this.url = url
         this.httpPostClient = httpPostClient
+        this.validation = validation
     }
     
     async create (params: TaskListParams): Promise<TaskListModel> {
+        
+        this.validation.validate(params)
         
         const httpResponse = await this.httpPostClient.post({
             url: this.url,
