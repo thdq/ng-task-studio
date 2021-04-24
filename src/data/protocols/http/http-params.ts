@@ -11,3 +11,7 @@ export interface HttpPutParams<T> {
 export interface HttpDeleteParams {
     url: string
 }
+
+export interface HttpGetParams {
+    url: string
+}

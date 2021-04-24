@@ -10,4 +10,6 @@ export interface TaskList {
     update? (params: TaskListParams): Promise<TaskListModel>
     
     delete? (): Promise<void>
+    
+    findAll? (): Promise<TaskListModel[]>
 }
