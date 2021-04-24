@@ -131,7 +131,7 @@ describe('EditTaskList use case', () => {
         
     })
     
-    test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpPutClient returns 400 on UnexpectedError', async () => {
 
         const { sut, httpPutClientStub } = makeSut()
 
@@ -149,7 +149,7 @@ describe('EditTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpPutClient returns 404 on UnexpectedError', async () => {
 
         const { sut, httpPutClientStub } = makeSut()
 
@@ -167,7 +167,7 @@ describe('EditTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpPutClient returns 500 on UnexpectedError', async () => {
 
         const { sut, httpPutClientStub } = makeSut()
 
