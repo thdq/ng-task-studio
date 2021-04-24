@@ -3,12 +3,26 @@ import { HttpPutClient } from '@/data/protocols/http/http-put-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskListModel } from '@/domain/models/task-list'
 import { TaskListParams } from '@/domain/usecases/tasks-lists/create-task-list'
+import { Validation, ValidationError } from '@/validation/validation'
 import faker from 'faker'
 import { EditTaskList } from './edit-task-list'
 
 interface SutType {
     sut: EditTaskList
     httpPutClientStub: HttpPutClient<TaskListParams, TaskListModel>
+    validationStub: Validation
+}
+
+const makeValidation = (): Validation => {
+    class ValidationStub implements Validation {
+        validate (input: any): ValidationError {
+            return {
+                error: null,
+                failedField: ""
+            }
+        }
+    }
+    return new ValidationStub()
 }
 
 const makeHttpPutClient = (): HttpPutClient<TaskListParams, TaskListModel> => {
@@ -37,11 +51,13 @@ const makeHttpPutClient = (): HttpPutClient<TaskListParams, TaskListModel> => {
 const makeSut = (url: string = faker.internet.url()): SutType => {
     
     const httpPutClientStub = makeHttpPutClient()
-    const sut = new EditTaskList(url, httpPutClientStub)
+    const validationStub = makeValidation()
+    const sut = new EditTaskList(url, httpPutClientStub, validationStub)
     
     return {
         sut,
-        httpPutClientStub
+        httpPutClientStub,
+        validationStub
     }
     
 }
@@ -76,6 +92,22 @@ describe('EditTaskList use case', () => {
 
         expect(httpPutClientStub.body).toEqual(taskListParams)
 
+    })
+    
+    test('Should call Validation with correct value', async () => {
+        
+        const { sut, validationStub } = makeSut()
+        
+        const validateSpy = jest.spyOn(validationStub, 'validate')
+        
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+        
+        await sut.update(taskListParams)
+        
+        expect(validateSpy).toHaveBeenCalledWith(taskListParams)
+        
     })    
 
 })
