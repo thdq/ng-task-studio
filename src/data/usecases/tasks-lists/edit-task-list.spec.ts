@@ -1,3 +1,4 @@
+import { MissingParamsError } from '@/data/errors/missing-params-error'
 import { HttpPutParams } from '@/data/protocols/http/http-params'
 import { HttpPutClient } from '@/data/protocols/http/http-put-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
@@ -108,6 +109,25 @@ describe('EditTaskList use case', () => {
         
         expect(validateSpy).toHaveBeenCalledWith(taskListParams)
         
-    })    
+    })
+    
+    test('Should return MissingParamsError if validation fails', async () => {
+        
+        const { sut, validationStub } = makeSut()
+        
+        const taskListParams: TaskListParams = {
+            title: ""
+        }
+        
+        jest.spyOn(validationStub, 'validate').mockReturnValueOnce({
+            error: new Error(),
+            failedField: "title"
+        })
+        
+        const promise = sut.update(taskListParams)
+
+        await expect(promise).rejects.toThrow(new MissingParamsError("title"))
+        
+    })      
 
 })
