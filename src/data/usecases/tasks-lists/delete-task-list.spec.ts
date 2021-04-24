@@ -98,6 +98,20 @@ describe('DeleteTaskList use case', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
-    })    
+    })
+    
+    test('Should return undefined if HttpDeleteClient returns 200', async () => {
+
+        const { sut, httpDeleteClientStub } = makeSut()
+        
+        httpDeleteClientStub.response = {
+            statusCode: HttpStatusCode.success
+        }
+
+        const taskList = await sut.delete()
+
+        expect(taskList).toBeUndefined()
+
+    })     
 
 })

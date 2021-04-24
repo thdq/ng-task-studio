@@ -203,9 +203,9 @@ describe('CreateTaskList use case', () => {
             title: faker.random.words()
         }
 
-        const user = await sut.create(taskListParams)
+        const taskList = await sut.create(taskListParams)
 
-        expect(user).toEqual(httpResult)
+        expect(taskList).toEqual(httpResult)
 
     })       
 

@@ -203,9 +203,9 @@ describe('EditTaskList use case', () => {
             title: faker.random.words()
         }
 
-        const user = await sut.update(taskListParams)
+        const taskList = await sut.update(taskListParams)
 
-        expect(user).toEqual(httpResult)
+        expect(taskList).toEqual(httpResult)
 
     })     
 
