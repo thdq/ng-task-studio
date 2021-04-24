@@ -1,7 +1,7 @@
 import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpDeleteClient } from "@/data/protocols/http/http-delete-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
-import { TaskList } from "@/domain/usecases/tasks-lists/task-list"
+import { TaskList } from "@/domain/usecases/task-list"
 
 export class DeleteTaskList implements TaskList {
     private readonly url: string

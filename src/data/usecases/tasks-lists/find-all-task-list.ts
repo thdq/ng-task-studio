@@ -2,7 +2,7 @@ import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpGetClient } from "@/data/protocols/http/http-get-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
 import { TaskListModel } from "@/domain/models/task-list"
-import { TaskList } from "@/domain/usecases/tasks-lists/task-list"
+import { TaskList } from "@/domain/usecases/task-list"
 
 export class FindAllTaskList implements TaskList {
     private readonly url: string
