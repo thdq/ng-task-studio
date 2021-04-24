@@ -3,12 +3,26 @@ import { HttpPutClient } from '@/data/protocols/http/http-put-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskModel } from '@/domain/models/task'
 import { TaskParams } from '@/domain/usecases/task'
+import { Validation, ValidationError } from '@/validation/validation'
 import faker from 'faker'
 import { EditTask } from './edit-task'
 
 interface SutTypes {
     sut: EditTask
     httpPutClientStub: HttpPutClient<TaskParams, TaskModel>
+    validationStub: Validation
+}
+
+const makeValidation = (): Validation => {
+    class ValidationStub implements Validation {
+        validate (input: any): ValidationError {
+            return {
+                error: null,
+                failedField: ""
+            }
+        }
+    }
+    return new ValidationStub()
 }
 
 const makeHttpPutClient = (): HttpPutClient<TaskParams, TaskModel> => {
@@ -37,11 +51,13 @@ const makeHttpPutClient = (): HttpPutClient<TaskParams, TaskModel> => {
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
     
     const httpPutClientStub = makeHttpPutClient()
-    const sut = new EditTask(url, httpPutClientStub)
+    const validationStub = makeValidation()
+    const sut = new EditTask(url, httpPutClientStub, validationStub)
     
     return {
         sut,
-        httpPutClientStub
+        httpPutClientStub,
+        validationStub
     }
     
 }
@@ -80,6 +96,24 @@ describe('EditTask use case', () => {
 
         expect(httpPutClientStub.body).toEqual(taskParams)
 
+    })
+    
+    test('Should call Validation with correct value', async () => {
+        
+        const { sut, validationStub } = makeSut()
+        
+        const validateSpy = jest.spyOn(validationStub, 'validate')
+        
+        const taskParams: TaskParams = {
+            title: faker.random.words(),
+            completed: false,
+            listId: faker.datatype.number()
+        }
+        
+        await sut.update(taskParams)
+        
+        expect(validateSpy).toHaveBeenCalledWith(taskParams)
+        
     })    
 
 })
