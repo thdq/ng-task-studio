@@ -3,6 +3,7 @@ import { HttpDeleteClient } from '@/data/protocols/http/http-delete-client'
 import { HttpDeleteParams } from '@/data/protocols/http/http-params'
 import faker from 'faker'
 import { DeleteTaskList } from "./delete-task-list"
+import { UnexpectedError } from "@/data/errors/unexpected"
 
 interface SutTypes {
     sut: DeleteTaskList
@@ -56,5 +57,47 @@ describe('DeleteTaskList use case', () => {
         expect(httpDeleteClientStub.url).toBe(url)
 
     })
+    
+    test('Should throw if HttpDeleteClient returns 400 on UnexpectedError', async () => {
+
+        const { sut, httpDeleteClientStub } = makeSut()
+
+        httpDeleteClientStub.response = {
+            statusCode: HttpStatusCode.badRequest
+        }
+
+        const promise = sut.delete()
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpDeleteClient returns 404 on UnexpectedError', async () => {
+
+        const { sut, httpDeleteClientStub } = makeSut()
+
+        httpDeleteClientStub.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const promise = sut.delete()
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpDeleteClient returns 500 on UnexpectedError', async () => {
+
+        const { sut, httpDeleteClientStub } = makeSut()
+
+        httpDeleteClientStub.response = {
+            statusCode: HttpStatusCode.serverError
+        }
+
+        const promise = sut.delete()
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })    
 
 })
