@@ -65,5 +65,21 @@ describe('CreateTask use case', () => {
         expect(httpPostClientStub.url).toBe(url)
     
     })
+    
+    test('Should call HttpPostClient with correct body', async () => {
+
+        const { sut, httpPostClientStub } = makeSut()
+
+        const taskParams: TaskParams = {
+            title: faker.random.words(),
+            completed: false,
+            listId: faker.datatype.number()
+        }
+
+        await sut.create(taskParams)
+
+        expect(httpPostClientStub.body).toEqual(taskParams)
+
+    })    
 
 })
