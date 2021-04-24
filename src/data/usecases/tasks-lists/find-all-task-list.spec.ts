@@ -1,6 +1,6 @@
 import { UnexpectedError } from '@/data/errors/unexpected'
 import { HttpGetClient } from '@/data/protocols/http/http-get-client'
-import { HttpDeleteParams } from '@/data/protocols/http/http-params'
+import { HttpGetParams } from '@/data/protocols/http/http-params'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskListModel } from '@/domain/models/task-list'
 import faker from 'faker'
@@ -18,7 +18,7 @@ const makeHttpGetClient = (): HttpGetClient<TaskListModel[]> => {
             statusCode: HttpStatusCode.success
         }
 
-        async delete (params: HttpDeleteParams): Promise<HttpResponse<R>> {
+        async get (params: HttpGetParams): Promise<HttpResponse<R>> {
 
             const { url } = params
 

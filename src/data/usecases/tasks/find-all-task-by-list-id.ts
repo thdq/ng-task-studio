@@ -1,22 +1,22 @@
 import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpGetClient } from "@/data/protocols/http/http-get-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
-import { TaskListModel } from "@/domain/models/task-list"
-import { TaskList } from "@/domain/usecases/task-list"
+import { TaskModel } from "@/domain/models/task"
+import { Task } from "@/domain/usecases/task"
 
-export class FindAllTaskList implements TaskList {
+export class FindAllTaskByListId implements Task {
     private readonly url: string
-    private readonly httpGetClient: HttpGetClient<TaskListModel[]>
+    private readonly httpGetClient: HttpGetClient<TaskModel[]>
     
-    constructor (url: string, httpGetClient: HttpGetClient<TaskListModel[]>) {
+    constructor (url: string, httpGetClient: HttpGetClient<TaskModel[]>) {
         this.url = url
         this.httpGetClient = httpGetClient
     }
     
-    async findAll (): Promise<TaskListModel[]> {
+    async findAllTaskByListId (listId: number): Promise<TaskModel[]> {
                 
         const httpResponse = await this.httpGetClient.get({
-            url: this.url
+            url: `${this.url}?listId=${listId}`
         })
         
         switch (httpResponse.statusCode) {
