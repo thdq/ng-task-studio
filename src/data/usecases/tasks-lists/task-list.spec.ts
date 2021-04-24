@@ -4,12 +4,26 @@ import { HttpPostClient } from '@/data/protocols/http/http-post-client'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskListModel } from '@/domain/models/task-list'
 import { TaskListParams } from '@/domain/usecases/tasks-lists/create-task-list'
+import { Validation, ValidationError } from '@/validation/validation'
 import faker from 'faker'
 import { TaskList } from './task-list'
 
 interface SutType {
     sut: TaskList
     httpPostClientStub: HttpPostClient<TaskListParams, TaskListModel>
+    validationStub: Validation
+}
+
+const makeValidation = (): Validation => {
+    class ValidationStub implements Validation {
+        validate (input: any): ValidationError {
+            return {
+                error: null,
+                failedField: ""
+            }
+        }
+    }
+    return new ValidationStub()
 }
 
 const makeHttpPostClient = (): HttpPostClient<TaskListParams, TaskListModel> => {
@@ -38,11 +52,13 @@ const makeHttpPostClient = (): HttpPostClient<TaskListParams, TaskListModel> => 
 const makeSut = (url: string = faker.internet.url()): SutType => {
     
     const httpPostClientStub = makeHttpPostClient()
-    const sut = new TaskList(url, httpPostClientStub)
+    const validationStub = makeValidation()
+    const sut = new TaskList(url, httpPostClientStub, validationStub)
     
     return {
         sut,
-        httpPostClientStub
+        httpPostClientStub,
+        validationStub
     }
     
 }
@@ -79,6 +95,22 @@ describe('TaskList use case', () => {
 
     })
     
+    test('Should call Validation with correct value', async () => {
+        
+        const { sut, validationStub } = makeSut()
+        
+        const validateSpy = jest.spyOn(validationStub, 'validate')
+        
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+        
+        await sut.create(taskListParams)
+        
+        expect(validateSpy).toHaveBeenCalledWith(taskListParams)
+        
+    })
+        
     test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
