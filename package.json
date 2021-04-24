@@ -1,19 +1,42 @@
 {
   "name": "ng-task-studio",
-  "version": "1.0.0",
-  "repository": "https://github.com/thdq/ng-task-studio.git",
-  "author": "Thiago Oliveira",
-  "license": "MIT",
+  "version": "0.0.0",
   "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
     "test": "jest",
     "test:watch": "yarn test --watch",
-    "test:staged": "yarn test --findRelatedTests"
+    "test:staged": "yarn test --findRelatedTests",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "postinstall": "husky install"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~11.2.11",
+    "@angular/common": "~11.2.11",
+    "@angular/compiler": "~11.2.11",
+    "@angular/core": "~11.2.11",
+    "@angular/forms": "~11.2.11",
+    "@angular/platform-browser": "~11.2.11",
+    "@angular/platform-browser-dynamic": "~11.2.11",
+    "@angular/router": "~11.2.11",
+    "axios": "^0.21.1",
+    "rxjs": "~6.6.0",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.11.3"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1102.10",
+    "@angular/cli": "~11.2.10",
+    "@angular/compiler-cli": "~11.2.11",
     "@types/axios": "^0.14.0",
     "@types/faker": "^5.5.3",
     "@types/jest": "^26.0.22",
+    "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "4",
+    "codelyzer": "^6.0.0",
     "eslint": "7",
     "eslint-config-standard-with-typescript": "^20.0.0",
     "eslint-plugin-import": "2",
@@ -24,10 +47,9 @@
     "husky": "5.1.1",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.4",
+    "protractor": "~7.0.0",
     "ts-jest": "^26.5.5",
-    "typescript": "^4.2.4"
-  },
-  "dependencies": {
-    "axios": "^0.21.1"
+    "ts-node": "~8.3.0",
+    "typescript": "~4.1.5"
   }
 }

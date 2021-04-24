@@ -1,16 +1,26 @@
 {
-  "compilerOptions": {
-      "baseUrl": "src",
-      "rootDirs": ["src"],
-      "outDir": "dist",
-      "module": "commonjs",
-      "target": "es2019",
-      "esModuleInterop": true,
-      "allowJs": true,
-      "sourceMap": true,
-      "paths": {
-          "@/*": ["*"]            
-      }
-  },
-  "exclude": ["node_modules", "dist"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "src",
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "es2020",
+        "paths": {
+            "@/*": ["*"]
+        },
+        "lib": [
+            "es2018",
+            "dom"
+        ]
+    },
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false
+    }
 }
