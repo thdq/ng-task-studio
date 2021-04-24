@@ -7,10 +7,10 @@ import { TaskListModel } from '@/domain/models/task-list'
 import { TaskListParams } from '@/domain/usecases/tasks-lists/create-task-list'
 import { Validation, ValidationError } from '@/validation/validation'
 import faker from 'faker'
-import { TaskList } from './task-list'
+import { CreateTaskList } from './create-task-list'
 
 interface SutType {
-    sut: TaskList
+    sut: CreateTaskList
     httpPostClientStub: HttpPostClient<TaskListParams, TaskListModel>
     validationStub: Validation
 }
@@ -54,7 +54,7 @@ const makeSut = (url: string = faker.internet.url()): SutType => {
     
     const httpPostClientStub = makeHttpPostClient()
     const validationStub = makeValidation()
-    const sut = new TaskList(url, httpPostClientStub, validationStub)
+    const sut = new CreateTaskList(url, httpPostClientStub, validationStub)
     
     return {
         sut,
@@ -64,7 +64,7 @@ const makeSut = (url: string = faker.internet.url()): SutType => {
     
 }
 
-describe('TaskList use case', () => {
+describe('CreateTaskList use case', () => {
 
     test('Should call HttpPostClient with correct URL', async () => {
 

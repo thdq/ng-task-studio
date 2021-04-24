@@ -4,6 +4,6 @@ export interface TaskListParams {
     title: string
 }
 
-export interface CreateTaskList {
+export interface TaskList {
     create (params: TaskListParams): Promise<TaskListModel>
 }

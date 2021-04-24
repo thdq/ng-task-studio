@@ -3,10 +3,10 @@ import { UnexpectedError } from "@/data/errors/unexpected"
 import { HttpPostClient } from "@/data/protocols/http/http-post-client"
 import { HttpStatusCode } from "@/data/protocols/http/http-response"
 import { TaskListModel } from "@/domain/models/task-list"
-import { CreateTaskList, TaskListParams } from "@/domain/usecases/tasks-lists/create-task-list"
+import { TaskList, TaskListParams } from "@/domain/usecases/tasks-lists/create-task-list"
 import { Validation } from "@/validation/validation"
 
-export class TaskList implements CreateTaskList {
+export class CreateTaskList implements TaskList {
     private readonly url: string
     private readonly httpPostClient: HttpPostClient<TaskListParams, TaskListModel>
     private readonly validation: Validation
