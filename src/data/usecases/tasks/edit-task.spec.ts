@@ -197,6 +197,33 @@ describe('EditTask use case', () => {
 
         await expect(promise).rejects.toThrow(new UnexpectedError())
 
-    })    
+    })
+    
+    test('Should return an TaskModel if HttpPutClient returns 200', async () => {
+
+        const { sut, httpPutClientStub } = makeSut()
+
+        const httpResult: TaskModel = {
+            id: faker.datatype.number(),
+            listId: faker.datatype.number(),
+            title: faker.random.words()
+        }
+
+        httpPutClientStub.response = {
+            statusCode: HttpStatusCode.success,
+            body: httpResult
+        }
+
+        const taskParams: TaskParams = {
+            title: faker.random.words(),
+            completed: false,
+            listId: faker.datatype.number()
+        }
+
+        const taskList = await sut.update(taskParams)
+
+        expect(taskList).toEqual(httpResult)
+
+    })     
 
 })
