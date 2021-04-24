@@ -63,5 +63,19 @@ describe('EditTaskList use case', () => {
         expect(httpPutClientStub.url).toBe(url)
 
     })
+    
+    test('Should call HttpPutClient with correct body', async () => {
+
+        const { sut, httpPutClientStub } = makeSut()
+
+        const taskListParams: TaskListParams = {
+            title: faker.random.words()
+        }
+
+        await sut.update(taskListParams)
+
+        expect(httpPutClientStub.body).toEqual(taskListParams)
+
+    })    
 
 })
