@@ -1,19 +1,18 @@
 import { MissingParamsError } from "@/data/errors/missing-params-error"
 import { UnexpectedError } from "@/data/errors/unexpected"
-import { HttpPostClient } from "@/data/protocols/http/http-post-client"
-import { HttpStatusCode } from "@/data/protocols/http/http-response"
+import { HttpClient, HttpStatusCode } from "@/data/protocols/http/http-client"
 import { TaskListModel } from "@/domain/models/task-list"
 import { TaskList, TaskListParams } from "@/domain/usecases/task-list"
 import { Validation } from "@/validation/validation"
 
 export class CreateTaskList implements TaskList {
     private readonly url: string
-    private readonly httpPostClient: HttpPostClient<TaskListParams, TaskListModel>
+    private readonly httpClient: HttpClient<TaskListModel>
     private readonly validation: Validation
     
-    constructor (url: string, httpPostClient: HttpPostClient<TaskListParams, TaskListModel>, validation: Validation) {
+    constructor (url: string, httpClient: HttpClient<TaskListModel>, validation: Validation) {
         this.url = url
-        this.httpPostClient = httpPostClient
+        this.httpClient = httpClient
         this.validation = validation
     }
     
@@ -23,13 +22,18 @@ export class CreateTaskList implements TaskList {
         
         if (validation.error) throw new MissingParamsError(validation.failedField)
         
-        const httpResponse = await this.httpPostClient.post({
+        const httpResponse = await this.httpClient.request({
             url: this.url,
+            method: 'post',
             body: params
         })
         
+        const taskListResult = httpResponse.body
+        
         switch (httpResponse.statusCode) {
-            case HttpStatusCode.success: return httpResponse.body
+            
+            case HttpStatusCode.success: return taskListResult
+            
             default: throw new UnexpectedError()
         }        
         

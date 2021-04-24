@@ -1,40 +1,41 @@
 import { UnexpectedError } from '@/data/errors/unexpected'
-import { HttpGetClient } from '@/data/protocols/http/http-get-client'
-import { HttpGetParams } from '@/data/protocols/http/http-params'
-import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
+import { HttpClient, HttpRequest, HttpResponse, HttpStatusCode, HttpMethod } from '@/data/protocols/http/http-client'
 import { TaskModel } from '@/domain/models/task'
 import faker from 'faker'
 import { FindTaskById } from './find-task-by-id'
 
 interface SutTypes {
     sut: FindTaskById
-    httpGetClientStub: HttpGetClient<TaskModel>
+    httpGetClientStub: HttpClient<TaskModel>
 }
-const makeHttpGetClient = (): HttpGetClient<TaskModel> => {
 
-    class HttpGetClientStub<R> implements HttpGetClient<R> {
+const makeHttpClient = (): HttpClient<TaskModel> => {
+
+    class HttpClientStub<R> implements HttpClient<R> {
         url?: string
+        method: HttpMethod
+        body?: any
+        headers?: any
         response: HttpResponse<R> = {
             statusCode: HttpStatusCode.success
         }
 
-        async get (params: HttpGetParams): Promise<HttpResponse<R>> {
-
-            const { url } = params
-
-            this.url = url
-
-            return await Promise.resolve(this.response)
+        async request (data: HttpRequest): Promise<HttpResponse<R>> {
+            this.url = data.url
+            this.method = data.method
+            this.body = data.body
+            this.headers = data.headers
+            return this.response
         }
     }
 
-    return new HttpGetClientStub()
+    return new HttpClientStub()
 
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
     
-    const httpGetClientStub = makeHttpGetClient()
+    const httpGetClientStub = makeHttpClient()
     const sut = new FindTaskById(url, httpGetClientStub)
     
     return {
@@ -46,7 +47,7 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
 
 describe('FindTaskById use case', () => {
 
-    test('Should call HttpGetClient with correct URL', async () => {
+    test('Should call HttpClient with correct URL', async () => {
 
         const url = faker.internet.url()
         const id = faker.datatype.number()
@@ -59,7 +60,7 @@ describe('FindTaskById use case', () => {
 
     })
     
-    test('Should throw if HttpGetClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 400 on UnexpectedError', async () => {
         
         const id = faker.datatype.number()
 
@@ -75,7 +76,7 @@ describe('FindTaskById use case', () => {
 
     })
     
-    test('Should throw if HttpGetClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 404 on UnexpectedError', async () => {
         
         const id = faker.datatype.number()
 
@@ -91,7 +92,7 @@ describe('FindTaskById use case', () => {
 
     })
     
-    test('Should throw if HttpGetClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 500 on UnexpectedError', async () => {
         
         const id = faker.datatype.number()
 

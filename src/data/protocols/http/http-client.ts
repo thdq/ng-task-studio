@@ -1,6 +1,32 @@
-import { HttpRequest } from "./http-request"
-import { HttpResponse } from "./http-response"
+export type HttpMethod = 'post' | 'get' | 'put' | 'delete'
+export interface HttpRequest {
+    url: string
+    method: HttpMethod
+    body?: any
+    headers?: any
+}
 
+export interface HttpResponse<T = any> {
+    statusCode: HttpStatusCode
+    body?: T
+}
+  
 export interface HttpClient<R = any> {
+    url?: string
+    method: HttpMethod
+    body?: any
+    headers?: any
+    response: HttpResponse<R>
+    
     request: (data: HttpRequest) => Promise<HttpResponse<R>>
+}
+  
+export enum HttpStatusCode {
+    success = 200,
+    noContent = 204,
+    badRequest = 400,
+    unauthorized = 401,
+    forbidden = 403,
+    notFound = 404,
+    serverError = 500
 }

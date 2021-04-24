@@ -1,8 +1,6 @@
 import { MissingParamsError } from '@/data/errors/missing-params-error'
 import { UnexpectedError } from '@/data/errors/unexpected'
-import { HttpPostParams } from '@/data/protocols/http/http-params'
-import { HttpPostClient } from '@/data/protocols/http/http-post-client'
-import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
+import { HttpClient, HttpRequest, HttpResponse, HttpStatusCode, HttpMethod } from '@/data/protocols/http/http-client'
 import { TaskListModel } from '@/domain/models/task-list'
 import { TaskListParams } from '@/domain/usecases/task-list'
 import { Validation, ValidationError } from '@/validation/validation'
@@ -11,7 +9,7 @@ import { CreateTaskList } from './create-task-list'
 
 interface SutType {
     sut: CreateTaskList
-    httpPostClientStub: HttpPostClient<TaskListParams, TaskListModel>
+    httpClientStub: HttpClient<TaskListModel>
     validationStub: Validation
 }
 
@@ -27,38 +25,39 @@ const makeValidation = (): Validation => {
     return new ValidationStub()
 }
 
-const makeHttpPostClient = (): HttpPostClient<TaskListParams, TaskListModel> => {
+const makeHttpClient = (): HttpClient<TaskListModel> => {
 
-    class HttpPostClientStub<T, R> implements HttpPostClient<T, R> {
+    class HttpClientStub<R> implements HttpClient<R> {
         url?: string
-        body?: T
+        method: HttpMethod
+        body?: any
+        headers?: any
         response: HttpResponse<R> = {
             statusCode: HttpStatusCode.success
         }
 
-        async post (params: HttpPostParams<T>): Promise<HttpResponse<R>> {
-
-            const { url, body } = params
-
-            this.url = url
-            this.body = body
-            return await Promise.resolve(this.response)
+        async request (data: HttpRequest): Promise<HttpResponse<R>> {
+            this.url = data.url
+            this.method = data.method
+            this.body = data.body
+            this.headers = data.headers
+            return this.response
         }
     }
 
-    return new HttpPostClientStub()
+    return new HttpClientStub()
 
 }
 
 const makeSut = (url: string = faker.internet.url()): SutType => {
     
-    const httpPostClientStub = makeHttpPostClient()
+    const httpClientStub = makeHttpClient()
     const validationStub = makeValidation()
-    const sut = new CreateTaskList(url, httpPostClientStub, validationStub)
+    const sut = new CreateTaskList(url, httpClientStub, validationStub)
     
     return {
         sut,
-        httpPostClientStub,
+        httpClientStub,
         validationStub
     }
     
@@ -66,11 +65,11 @@ const makeSut = (url: string = faker.internet.url()): SutType => {
 
 describe('CreateTaskList use case', () => {
 
-    test('Should call HttpPostClient with correct URL', async () => {
+    test('Should call HttpClient with correct URL', async () => {
 
         const url = faker.internet.url()
         
-        const { sut, httpPostClientStub } = makeSut(url)
+        const { sut, httpClientStub } = makeSut(url)
         
         const taskListParams: TaskListParams = {
             title: faker.random.words()
@@ -78,13 +77,13 @@ describe('CreateTaskList use case', () => {
         
         await sut.create(taskListParams)
         
-        expect(httpPostClientStub.url).toBe(url)
+        expect(httpClientStub.url).toBe(url)
 
     })
     
-    test('Should call HttpPostClient with correct body', async () => {
+    test('Should call HttpClient with correct body', async () => {
 
-        const { sut, httpPostClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
         const taskListParams: TaskListParams = {
             title: faker.random.words()
@@ -92,7 +91,7 @@ describe('CreateTaskList use case', () => {
 
         await sut.create(taskListParams)
 
-        expect(httpPostClientStub.body).toEqual(taskListParams)
+        expect(httpClientStub.body).toEqual(taskListParams)
 
     })
     
@@ -131,11 +130,11 @@ describe('CreateTaskList use case', () => {
         
     })      
     
-    test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 400 on UnexpectedError', async () => {
 
-        const { sut, httpPostClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpPostClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.badRequest
         }
 
@@ -149,11 +148,11 @@ describe('CreateTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 404 on UnexpectedError', async () => {
 
-        const { sut, httpPostClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpPostClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.notFound
         }
 
@@ -167,11 +166,11 @@ describe('CreateTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 500 on UnexpectedError', async () => {
 
-        const { sut, httpPostClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpPostClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.serverError
         }
 
@@ -185,16 +184,16 @@ describe('CreateTaskList use case', () => {
 
     })
     
-    test('Should return an TaskListModel if HttpPostClient returns 200', async () => {
+    test('Should return an TaskListModel if HttpClient returns 200', async () => {
 
-        const { sut, httpPostClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
         const httpResult: TaskListModel = {
             id: faker.datatype.number(),
             title: faker.random.words()
         }
 
-        httpPostClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.success,
             body: httpResult
         }

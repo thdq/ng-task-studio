@@ -1,21 +1,21 @@
 import { UnexpectedError } from "@/data/errors/unexpected"
-import { HttpDeleteClient } from "@/data/protocols/http/http-delete-client"
-import { HttpStatusCode } from "@/data/protocols/http/http-response"
+import { HttpClient, HttpStatusCode } from "@/data/protocols/http/http-client"
 import { Task } from "@/domain/usecases/task"
 
 export class DeleteTask implements Task {
     private readonly url: string
-    private readonly httpDeleteClient: HttpDeleteClient<void>
+    private readonly httpClient: HttpClient<void>
     
-    constructor (url: string, httpDeleteClient: HttpDeleteClient<void>) {
+    constructor (url: string, httpClient: HttpClient<void>) {
         this.url = url
-        this.httpDeleteClient = httpDeleteClient
+        this.httpClient = httpClient
     }
     
     async delete (): Promise<void> {
                 
-        const httpResponse = await this.httpDeleteClient.delete({
-            url: this.url
+        const httpResponse = await this.httpClient.request({
+            url: this.url,
+            method: 'delete'
         })
         
         switch (httpResponse.statusCode) {

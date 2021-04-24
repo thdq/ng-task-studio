@@ -1,68 +1,69 @@
 import { UnexpectedError } from '@/data/errors/unexpected'
-import { HttpGetClient } from '@/data/protocols/http/http-get-client'
-import { HttpGetParams } from '@/data/protocols/http/http-params'
-import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
 import { TaskListModel } from '@/domain/models/task-list'
+import { HttpClient, HttpRequest, HttpResponse, HttpStatusCode, HttpMethod } from '@/data/protocols/http/http-client'
 import faker from 'faker'
 import { FindAllTaskList } from './find-all-task-list'
 
 interface SutTypes {
     sut: FindAllTaskList
-    httpGetClientStub: HttpGetClient<TaskListModel[]>
+    httpClientStub: HttpClient<TaskListModel[]>
 }
-const makeHttpGetClient = (): HttpGetClient<TaskListModel[]> => {
 
-    class HttpGetClientStub<R> implements HttpGetClient<R> {
+const makeHttpClient = (): HttpClient<TaskListModel[]> => {
+
+    class HttpClientStub<R> implements HttpClient<R> {
         url?: string
+        method: HttpMethod
+        body?: any
+        headers?: any
         response: HttpResponse<R> = {
             statusCode: HttpStatusCode.success
         }
 
-        async get (params: HttpGetParams): Promise<HttpResponse<R>> {
-
-            const { url } = params
-
-            this.url = url
-
-            return await Promise.resolve(this.response)
+        async request (data: HttpRequest): Promise<HttpResponse<R>> {
+            this.url = data.url
+            this.method = data.method
+            this.body = data.body
+            this.headers = data.headers
+            return this.response
         }
     }
 
-    return new HttpGetClientStub()
+    return new HttpClientStub()
 
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
     
-    const httpGetClientStub = makeHttpGetClient()
-    const sut = new FindAllTaskList(url, httpGetClientStub)
+    const httpClientStub = makeHttpClient()
+    const sut = new FindAllTaskList(url, httpClientStub)
     
     return {
         sut,
-        httpGetClientStub
+        httpClientStub
     }
     
 }
 
 describe('FindAllTaskList use case', () => {
 
-    test('Should call HttpGetClient with correct URL', async () => {
+    test('Should call HttpClient with correct URL', async () => {
 
         const url = faker.internet.url()
         
-        const { sut, httpGetClientStub } = makeSut(url)
+        const { sut, httpClientStub } = makeSut(url)
                 
         await sut.findAll()
         
-        expect(httpGetClientStub.url).toBe(url)
+        expect(httpClientStub.url).toBe(url)
 
     })
     
-    test('Should throw if HttpGetClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 400 on UnexpectedError', async () => {
 
-        const { sut, httpGetClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpGetClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.badRequest
         }
 
@@ -72,11 +73,11 @@ describe('FindAllTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpGetClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 404 on UnexpectedError', async () => {
 
-        const { sut, httpGetClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpGetClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.notFound
         }
 
@@ -86,11 +87,11 @@ describe('FindAllTaskList use case', () => {
 
     })
     
-    test('Should throw if HttpGetClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 500 on UnexpectedError', async () => {
 
-        const { sut, httpGetClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
-        httpGetClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.serverError
         }
 
@@ -100,9 +101,9 @@ describe('FindAllTaskList use case', () => {
 
     })
     
-    test('Should return an TaskListModel array if HttpGetClient returns 200', async () => {
+    test('Should return an TaskListModel array if HttpClient returns 200', async () => {
 
-        const { sut, httpGetClientStub } = makeSut()
+        const { sut, httpClientStub } = makeSut()
 
         const httpResult: TaskListModel[] = [
             {
@@ -115,7 +116,7 @@ describe('FindAllTaskList use case', () => {
             }            
         ]
 
-        httpGetClientStub.response = {
+        httpClientStub.response = {
             statusCode: HttpStatusCode.success,
             body: httpResult
         }

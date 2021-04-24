@@ -1,8 +1,6 @@
 import { MissingParamsError } from '@/data/errors/missing-params-error'
 import { UnexpectedError } from '@/data/errors/unexpected'
-import { HttpPostParams } from '@/data/protocols/http/http-params'
-import { HttpPostClient } from '@/data/protocols/http/http-post-client'
-import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
+import { HttpClient, HttpRequest, HttpResponse, HttpStatusCode, HttpMethod } from '@/data/protocols/http/http-client'
 import { TaskModel } from '@/domain/models/task'
 import { TaskParams } from '@/domain/usecases/task'
 import { Validation, ValidationError } from '@/validation/validation'
@@ -11,7 +9,7 @@ import { CreateTask } from './create-task'
 
 interface SutTypes {
     sut: CreateTask
-    httpPostClientStub: HttpPostClient<TaskParams, TaskModel>
+    httpPostClientStub: HttpClient<TaskModel>
     validationStub: Validation
 }
 
@@ -27,32 +25,33 @@ const makeValidation = (): Validation => {
     return new ValidationStub()
 }
 
-const makeHttpPostClient = (): HttpPostClient<TaskParams, TaskModel> => {
+const makeHttpClient = (): HttpClient<TaskModel> => {
 
-    class HttpPostClientStub<T, R> implements HttpPostClient<T, R> {
+    class HttpClientStub<R> implements HttpClient<R> {
         url?: string
-        body?: T
+        method: HttpMethod
+        body?: any
+        headers?: any
         response: HttpResponse<R> = {
             statusCode: HttpStatusCode.success
         }
 
-        async post (params: HttpPostParams<T>): Promise<HttpResponse<R>> {
-
-            const { url, body } = params
-
-            this.url = url
-            this.body = body
-            return await Promise.resolve(this.response)
+        async request (data: HttpRequest): Promise<HttpResponse<R>> {
+            this.url = data.url
+            this.method = data.method
+            this.body = data.body
+            this.headers = data.headers
+            return this.response
         }
     }
 
-    return new HttpPostClientStub()
+    return new HttpClientStub()
 
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
     
-    const httpPostClientStub = makeHttpPostClient()
+    const httpPostClientStub = makeHttpClient()
     const validationStub = makeValidation()
     const sut = new CreateTask(url, httpPostClientStub, validationStub)
     
@@ -66,7 +65,7 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
 
 describe('CreateTask use case', () => {
 
-    test('Should call HttpPostClient with correct URL', async () => {
+    test('Should call HttpClient with correct URL', async () => {
 
         const url = faker.internet.url()
             
@@ -84,7 +83,7 @@ describe('CreateTask use case', () => {
     
     })
     
-    test('Should call HttpPostClient with correct body', async () => {
+    test('Should call HttpClient with correct body', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
 
@@ -139,7 +138,7 @@ describe('CreateTask use case', () => {
         
     })
     
-    test('Should throw if HttpPostClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 400 on UnexpectedError', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
 
@@ -159,7 +158,7 @@ describe('CreateTask use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 404 on UnexpectedError', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
 
@@ -179,7 +178,7 @@ describe('CreateTask use case', () => {
 
     })
     
-    test('Should throw if HttpPostClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 500 on UnexpectedError', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
 
@@ -199,7 +198,7 @@ describe('CreateTask use case', () => {
 
     })
     
-    test('Should return an TaskModel if HttpPostClient returns 200', async () => {
+    test('Should return an TaskModel if HttpClient returns 200', async () => {
 
         const { sut, httpPostClientStub } = makeSut()
 

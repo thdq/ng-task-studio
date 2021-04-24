@@ -1,40 +1,40 @@
 import { UnexpectedError } from '@/data/errors/unexpected'
-import { HttpDeleteClient } from '@/data/protocols/http/http-delete-client'
-import { HttpDeleteParams } from '@/data/protocols/http/http-params'
-import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
+import { HttpClient, HttpRequest, HttpResponse, HttpStatusCode, HttpMethod } from '@/data/protocols/http/http-client'
 import faker from 'faker'
 import { DeleteTask } from './delete-task'
 
 interface SutTypes {
     sut: DeleteTask
-    httpDeleteClientStub: HttpDeleteClient<void>
+    httpDeleteClientStub: HttpClient<void>
 }
 
-const makeHttpDeleteClient = (): HttpDeleteClient<void> => {
+const makeHttpClient = (): HttpClient<void> => {
 
-    class HttpDeleteClientStub<R> implements HttpDeleteClient<R> {
+    class HttpClientStub<R> implements HttpClient<R> {
         url?: string
+        method: HttpMethod
+        body?: any
+        headers?: any
         response: HttpResponse<R> = {
             statusCode: HttpStatusCode.success
         }
 
-        async delete (params: HttpDeleteParams): Promise<HttpResponse<R>> {
-
-            const { url } = params
-
-            this.url = url
-
-            return await Promise.resolve(this.response)
+        async request (data: HttpRequest): Promise<HttpResponse<R>> {
+            this.url = data.url
+            this.method = data.method
+            this.body = data.body
+            this.headers = data.headers
+            return this.response
         }
     }
 
-    return new HttpDeleteClientStub()
+    return new HttpClientStub()
 
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
     
-    const httpDeleteClientStub = makeHttpDeleteClient()
+    const httpDeleteClientStub = makeHttpClient()
     const sut = new DeleteTask(url, httpDeleteClientStub)
     
     return {
@@ -46,7 +46,7 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
 
 describe('DeleteTask use case', () => {
 
-    test('Should call HttpDeleteClient with correct URL', async () => {
+    test('Should call HttpClient with correct URL', async () => {
 
         const url = faker.internet.url()
         
@@ -58,7 +58,7 @@ describe('DeleteTask use case', () => {
 
     })
     
-    test('Should throw if HttpDeleteClient returns 400 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 400 on UnexpectedError', async () => {
 
         const { sut, httpDeleteClientStub } = makeSut()
 
@@ -72,7 +72,7 @@ describe('DeleteTask use case', () => {
 
     })
     
-    test('Should throw if HttpDeleteClient returns 404 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 404 on UnexpectedError', async () => {
 
         const { sut, httpDeleteClientStub } = makeSut()
 
@@ -86,7 +86,7 @@ describe('DeleteTask use case', () => {
 
     })
     
-    test('Should throw if HttpDeleteClient returns 500 on UnexpectedError', async () => {
+    test('Should throw if HttpClient returns 500 on UnexpectedError', async () => {
 
         const { sut, httpDeleteClientStub } = makeSut()
 
@@ -100,7 +100,7 @@ describe('DeleteTask use case', () => {
 
     })
     
-    test('Should return undefined if HttpDeleteClient returns 200', async () => {
+    test('Should return undefined if HttpClient returns 200', async () => {
 
         const { sut, httpDeleteClientStub } = makeSut()
         
