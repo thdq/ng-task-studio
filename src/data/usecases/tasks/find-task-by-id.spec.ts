@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@/data/errors/unexpected'
 import { HttpGetClient } from '@/data/protocols/http/http-get-client'
 import { HttpGetParams } from '@/data/protocols/http/http-params'
 import { HttpResponse, HttpStatusCode } from '@/data/protocols/http/http-response'
@@ -7,9 +8,9 @@ import { FindTaskById } from './find-task-by-id'
 
 interface SutTypes {
     sut: FindTaskById
-    httpGetClientStub: HttpGetClient<TaskModel[]>
+    httpGetClientStub: HttpGetClient<TaskModel>
 }
-const makeHttpGetClient = (): HttpGetClient<TaskModel[]> => {
+const makeHttpGetClient = (): HttpGetClient<TaskModel> => {
 
     class HttpGetClientStub<R> implements HttpGetClient<R> {
         url?: string
@@ -52,10 +53,58 @@ describe('FindTaskById use case', () => {
         
         const { sut, httpGetClientStub } = makeSut(url)
                 
-        await sut.findAllTaskByListId(id)
+        await sut.findTaskById(id)
         
         expect(httpGetClientStub.url).toBe(`${url}/${id}`)
 
     })
+    
+    test('Should throw if HttpGetClient returns 400 on UnexpectedError', async () => {
+        
+        const id = faker.datatype.number()
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.badRequest
+        }
+
+        const promise = sut.findTaskById(id)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpGetClient returns 404 on UnexpectedError', async () => {
+        
+        const id = faker.datatype.number()
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const promise = sut.findTaskById(id)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })
+    
+    test('Should throw if HttpGetClient returns 500 on UnexpectedError', async () => {
+        
+        const id = faker.datatype.number()
+
+        const { sut, httpGetClientStub } = makeSut()
+
+        httpGetClientStub.response = {
+            statusCode: HttpStatusCode.serverError
+        }
+
+        const promise = sut.findTaskById(id)
+
+        await expect(promise).rejects.toThrow(new UnexpectedError())
+
+    })    
 
 })
