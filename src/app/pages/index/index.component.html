@@ -6,7 +6,7 @@
             </div>
             <div class="flex items-center">
                 <nav class="text-blue-900 text-lg hidden lg:flex items-center">
-                    <a href="https://github.com/thdq/ng-task-studio" class="py-2 px-8 flex hover:text-blue-700">
+                    <a [routerLink]="['/about']" class="py-2 px-8 flex hover:text-blue-700">
                         Sobre
                     </a>
                     <a href="https://github.com/thdq/ng-task-studio" class="py-2 px-8 flex hover:text-blue-700">
@@ -202,8 +202,7 @@
             class="sm:w-5/12 xl:w-4/12 flex flex-col items-start sm:items-end sm:text-right ml-auto mt-8 sm:mt-0 relative z-10 xl:pt-20 mb-16 sm:mb-0">
             <h1 class="text-4xl lg:text-5xl text-blue-900 leading-none mb-4 font-black">Gerenciamento de tarefas</h1>
             <p class="lg:text-lg mb-4 sm:mb-12 text-blue-900">Task Studio prove a facilidade de criar e gerenciar suas tarefas. Crie, edite e mais o importante de tudo, conclua-a!</p>
-            <a href="#"
-                class="font-semibold text-lg bg-blue-600 hover:bg-blue-400 text-white py-3 px-12 rounded-full">Acessar portal</a>
+            <a [routerLink]="['/my-todo']" class="font-semibold text-lg bg-blue-600 hover:bg-blue-400 text-white py-3 px-12 rounded-full">Acessar portal</a>
         </div>
         <svg class="w-full absolute bottom-0 left-0" id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 497.5 141.26">

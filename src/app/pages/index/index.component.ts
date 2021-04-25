@@ -1,13 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 
 @Component({
     selector: 'index-cmp',
     templateUrl: 'index.component.html'
 })
 
-export class IndexComponent implements OnInit {
+export class IndexComponent {
 
-    ngOnInit (): void {
-        console.log()
-    }
 }
