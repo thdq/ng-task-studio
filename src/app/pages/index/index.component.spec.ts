@@ -35,4 +35,14 @@ describe('IndexComponent', () => {
         expect(aboutRouteLink.getAttribute('ng-reflect-router-link')).toBe('/about')
 
     })
+
+    test('Should contains docs route page', () => {
+
+        const wrapper: HTMLElement = fixture.debugElement.nativeElement
+
+        const aboutRouteLink = wrapper.querySelector("[data-test=docs-router-link]")
+
+        expect(aboutRouteLink.getAttribute('ng-reflect-router-link')).toBe('https://github.com/thdq/ng-task-studio')
+
+    })
 })
