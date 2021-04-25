@@ -25,4 +25,14 @@ describe('IndexComponent', () => {
         expect(component).toBeTruthy()
 
     })
+
+    test('Should contains about route page', () => {
+
+        const wrapper: HTMLElement = fixture.debugElement.nativeElement
+
+        const aboutRouteLink = wrapper.querySelector("[data-test=about-router-link]")
+
+        expect(aboutRouteLink.getAttribute('ng-reflect-router-link')).toBe('/about')
+
+    })
 })
