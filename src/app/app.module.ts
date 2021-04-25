@@ -1,22 +1,23 @@
+import { BrowserModule } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { NgModule } from '@angular/core'
-import { RouterModule } from '@angular/router'
 
 import { AppComponent } from './app.component'
 import { AppRoutes } from './app.routing'
-
-import { LayoutComponent } from './layouts/layout.component'
-
+import { IndexComponent } from "./pages/index/index.component"
+import { MyTodoComponent } from "./layouts/my-todo/my-todo.component"
+import { NavbarComponent } from './components/navbar/navbar.component'
 @NgModule({
     declarations: [
         AppComponent,
-        LayoutComponent
+        IndexComponent,
+        MyTodoComponent,
+        NavbarComponent
     ],
     imports: [
+        BrowserModule,
         BrowserAnimationsModule,
-        RouterModule.forRoot(AppRoutes, {
-            useHash: true
-        })
+        AppRoutes
     ],
     providers: [],
     bootstrap: [AppComponent]

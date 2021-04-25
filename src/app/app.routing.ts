@@ -1,15 +1,24 @@
-import { Routes } from '@angular/router'
+import { NgModule } from "@angular/core"
+import { Routes, RouterModule } from "@angular/router"
+import { MyTodoComponent } from "./layouts/my-todo/my-todo.component"
+import { HomeComponent } from "./pages/home/home.component"
+import { IndexComponent } from "./pages/index/index.component"
 
-import { LayoutComponent } from './layouts/layout.component'
-
-export const AppRoutes: Routes = [
+const routes: Routes = [
     {
-        path: '',
-        component: LayoutComponent,
+        path: "my-todo",
+        component: MyTodoComponent,
         children: [
-            {
-                path: '',
-                loadChildren: async () => await import('./layouts/layout.module').then(m => m.LayoutModule)
-            }]
-    }
+            { path: "", redirectTo: "home", pathMatch: "full" },
+            { path: "home", component: HomeComponent }
+        ]
+    },
+    { path: "", component: IndexComponent },
+    { path: "**", redirectTo: "", pathMatch: "full" }
 ]
+
+@NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
+})
+export class AppRoutes {}
