@@ -4,23 +4,23 @@ Task Studio é uma aplicação web com objetivo de gerenciar tarefas diárias.
 
 ### Funcionalidades da versão 1.x.x
 
-- [ ]  Criar listas de tarefas;
-- [ ]  Criar tarefas;
-- [ ]  Editar tarefa;
-- [ ]  Alterar o status da tarefa;
-- [ ]  Concluir uma tarefa.
+- [x] Criar listas de tarefas;
+- [x] Criar tarefas;
+- [ ] Editar tarefa;
+- [ ] Alterar o status da tarefa;
+- [ ] Concluir uma tarefa.
 
 ### Funcionalidades da versão 2.x.x
 
-- [ ]  Adicionar uma tag a uma tarefa;
-- [ ]  Agrupar tarefas por tag;
-- [ ]  Adicionar uma descrição a uma tarefa;
-- [ ]  Adicionar um prazo de conclusão a uma tarefa.
+- [ ] Adicionar uma tag a uma tarefa;
+- [ ] Agrupar tarefas por tag;
+- [ ] Adicionar uma descrição a uma tarefa;
+- [ ] Adicionar um prazo de conclusão a uma tarefa.
 
 ### Funcionalidades da versão 3.x.x
 
-- [ ]  Opção de desfazer uma ação;
-- [ ]  Notificação de tarefas com prazo vencido.
+- [ ] Opção de desfazer uma ação;
+- [ ] Notificação de tarefas com prazo vencido.
 
 ### Tecnologias e bibliotecas usadas durante o desenvolvimento:
 
