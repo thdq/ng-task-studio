@@ -9,30 +9,30 @@ export class EditTaskList implements TaskList {
     private readonly url: string
     private readonly httpClient: HttpClient<TaskListModel>
     private readonly validation: Validation
-    
+
     constructor (url: string, httpClient: HttpClient<TaskListModel>, validation: Validation) {
         this.url = url
         this.httpClient = httpClient
         this.validation = validation
     }
-    
+
     async update (params: TaskListParams): Promise<TaskListModel> {
-        
+
         const validation = this.validation.validate(params)
-        
-        if (validation.error) throw new MissingParamsError(validation.failedField)
-        
+
+        if (validation?.error) throw new MissingParamsError(validation.failedField)
+
         const httpResponse = await this.httpClient.request({
             url: this.url,
             body: params,
             method: "put"
         })
-        
+
         switch (httpResponse.statusCode) {
             case HttpStatusCode.success: return httpResponse.body
             default: throw new UnexpectedError()
-        }        
-        
+        }
+
     }
-    
+
 }

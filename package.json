@@ -10,7 +10,8 @@
     "test:staged": "yarn test --findRelatedTests",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "start-server": "json-server --delay 500 db.json"
   },
   "private": true,
   "dependencies": {

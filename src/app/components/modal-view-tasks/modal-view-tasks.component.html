@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <h4 class="inline-block text-1xl font-extrabold text-gray-900 tracking-tight">Tarefas da lista: {{ taskListName }}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Título</th>
+                <th scope="col">Completado</th>
+                <th scope="col">Acões</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of tasks; index as i">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>
+                    <div class="line-through" *ngIf="item.completed;else elseBlockTitle">
+                        {{ item.title }}
+                    </div>
+                    <ng-template #elseBlockTitle>
+                        <div>
+                            {{ item.title }}
+                        </div>
+                    </ng-template>
+
+
+                </td>
+                <td>{{ getCompletedText(item) }}</td>
+
+                <td>
+
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="modal-footer">
+
+</div>

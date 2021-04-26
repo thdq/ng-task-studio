@@ -9,30 +9,30 @@ export class CreateTask implements Task {
     private readonly url: string
     private readonly httpClient: HttpClient<TaskModel>
     private readonly validation: Validation
-    
+
     constructor (url: string, httpClient: HttpClient<TaskModel>, validation: Validation) {
         this.url = url
         this.httpClient = httpClient
         this.validation = validation
     }
-    
+
     async create (params: TaskParams): Promise<TaskModel> {
-        
+
         const validation = this.validation.validate(params)
-        
-        if (validation.error) throw new MissingParamsError(validation.failedField)
-                
+
+        if (validation?.error) throw new MissingParamsError(validation.failedField)
+
         const httpResponse = await this.httpClient.request({
             url: this.url,
             method: 'post',
             body: params
         })
-        
+
         switch (httpResponse.statusCode) {
-            case HttpStatusCode.success: return httpResponse.body
+            case HttpStatusCode.success: case HttpStatusCode.created: return httpResponse.body
             default: throw new UnexpectedError()
-        }        
-        
+        }
+
     }
-    
+
 }

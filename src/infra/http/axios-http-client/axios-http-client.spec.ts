@@ -11,16 +11,16 @@ interface SutTypes {
 }
 
 const makeAxios = (): jest.Mocked<typeof axios> => {
-    
+
     const mockHttpResponse = (): any => ({
         data: faker.random.objectElement(),
         status: faker.datatype.number()
     })
-    
+
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    
+
     mockedAxios.request.mockClear().mockResolvedValue(mockHttpResponse())
-    
+
     return mockedAxios
 }
 
@@ -34,16 +34,16 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AxiosHttpClient', () => {
-    
+
     test('Should call axios with correct values', async () => {
-        
+
         const request: HttpRequest = {
             url: faker.internet.url(),
             method: faker.random.arrayElement(['get', 'post', 'put', 'delete']),
             body: faker.random.objectElement(),
             headers: faker.random.objectElement()
         }
-          
+
         const { sut, mockedAxios } = makeSut()
 
         await sut.request(request)
@@ -54,54 +54,28 @@ describe('AxiosHttpClient', () => {
             headers: request.headers,
             method: request.method
         })
-        
+
     })
-    
+
     test('Should return correct response', async () => {
-        
+
         const { sut, mockedAxios } = makeSut()
-        
+
         const request: HttpRequest = {
             url: faker.internet.url(),
             method: faker.random.arrayElement(['get', 'post', 'put', 'delete']),
             body: faker.random.objectElement(),
             headers: faker.random.objectElement()
-        }        
-    
+        }
+
         const httpResponse = await sut.request(request)
         const axiosResponse = await mockedAxios.request.mock.results[0].value
-    
+
         expect(httpResponse).toEqual({
             statusCode: axiosResponse.status,
             body: axiosResponse.data
         })
-        
-    })    
-    
-    test('Should return correct error', () => {
-        
-        const { sut, mockedAxios } = makeSut()
-        
-        const request: HttpRequest = {
-            url: faker.internet.url(),
-            method: faker.random.arrayElement(['get', 'post', 'put', 'delete']),
-            body: faker.random.objectElement(),
-            headers: faker.random.objectElement()
-        }        
-        
-        const httpResponse = {
-            data: faker.random.objectElement(),
-            status: faker.datatype.number()            
-        }
-        
-        mockedAxios.request.mockRejectedValueOnce({
-            response: httpResponse
-        })
-    
-        const promise = sut.request(request)
-    
-        expect(promise).toEqual(mockedAxios.request.mock.results[0].value)
-        
-    })    
+
+    })
 
 })

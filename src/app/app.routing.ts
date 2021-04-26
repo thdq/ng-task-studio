@@ -3,6 +3,9 @@ import { Routes, RouterModule } from "@angular/router"
 import { MyTodoComponent } from "./layouts/my-todo/my-todo.component"
 import { HomeComponent } from "./pages/home/home.component"
 import { IndexComponent } from "./pages/index/index.component"
+import { HomeModule } from "./pages/home/home.module"
+import { CommonModule } from "@angular/common"
+import { BrowserModule } from "@angular/platform-browser"
 
 const routes: Routes = [
     {
@@ -18,7 +21,12 @@ const routes: Routes = [
 ]
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [
+        HomeModule,
+        CommonModule,
+        BrowserModule,
+        RouterModule.forRoot(routes)
+    ],
     exports: [RouterModule]
 })
 export class AppRoutes {}

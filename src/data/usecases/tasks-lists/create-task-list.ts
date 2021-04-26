@@ -9,34 +9,34 @@ export class CreateTaskList implements TaskList {
     private readonly url: string
     private readonly httpClient: HttpClient<TaskListModel>
     private readonly validation: Validation
-    
+
     constructor (url: string, httpClient: HttpClient<TaskListModel>, validation: Validation) {
         this.url = url
         this.httpClient = httpClient
         this.validation = validation
     }
-    
+
     async create (params: TaskListParams): Promise<TaskListModel> {
-        
+
         const validation = this.validation.validate(params)
-        
-        if (validation.error) throw new MissingParamsError(validation.failedField)
-        
+
+        if (validation?.error) throw new MissingParamsError(validation.failedField)
+
         const httpResponse = await this.httpClient.request({
             url: this.url,
             method: 'post',
             body: params
         })
-        
+
         const taskListResult = httpResponse.body
-        
+
         switch (httpResponse.statusCode) {
-            
-            case HttpStatusCode.success: return taskListResult
-            
+
+            case HttpStatusCode.success: case HttpStatusCode.created: return taskListResult
+
             default: throw new UnexpectedError()
-        }        
-        
+        }
+
     }
-    
+
 }

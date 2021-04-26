@@ -1,4 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser"
+import { CommonModule } from '@angular/common'
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { NgModule } from '@angular/core'
 
@@ -15,6 +16,7 @@ import { NavbarComponent } from './components/navbar/navbar.component'
         NavbarComponent
     ],
     imports: [
+        CommonModule,
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutes
