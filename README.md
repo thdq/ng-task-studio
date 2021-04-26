@@ -47,9 +47,11 @@ Task Studio é uma aplicação web com objetivo de gerenciar tarefas diárias.
 ```bash
 # Usando Yarn
 yarn install --production # Se deseja instalar as dependências de desevolvimento remova a flag --production
-yarn dev
+yarn start-server # Inicia o servidor JSON Server
+yarn start
 
 # Usando NPM
 npm run install --only-prod # Se deseja instalar as dependências de desevolvimento remova a flag --only-prod
-npm run dev
+npm run start-server # Inicia o servidor JSON Server
+npm run start
 ```
